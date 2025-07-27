@@ -1,3 +1,7 @@
+<div align="left">
+  <img src="images/hot-chicken.png" alt="terminal hot ones cli" width="300"/>
+  <p><em>unofficial hot ones cli in action</em></p>
+</div>
 # WingScrape 🔥 🐔
 
 A TypeScript-based web scraper and interactive CLI for analyzing Hot Ones episodes from TheTVDB. Dive into the spicy world of celebrity interviews with detailed episode data, statistics, and an engaging command-line interface.
