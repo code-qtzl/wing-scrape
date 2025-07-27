@@ -71,6 +71,11 @@ Once you run `npm run cli`, you'll be greeted with the Hot Ones Interactive CLI!
   <p><em>Scraping TheTVDB</em></p>
 </div>
 
+<div align="center">
+  <img src="images/terminal-latest-season.png" alt="latest season and episodes" width="600"/>
+  <p><em>Latest Season and Episodes</em></p>
+</div>
+
 ## 📁 Output
 
 - **JSON Export**: Episodes are saved to `hot-ones-report.json`
