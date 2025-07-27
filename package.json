@@ -3,6 +3,10 @@
 	"version": "1.0.0",
 	"description": "A TypeScript-based scraper for Hot Ones episodes from TheTVDB",
 	"main": "src/hot-ones-main.ts",
+	"engines": {
+		"node": ">=18.0.0",
+		"npm": ">=8.0.0"
+	},
 	"scripts": {
 		"scrape": "ts-node src/hot-ones-main.ts",
 		"cli": "ts-node src/interactive-cli.ts"
