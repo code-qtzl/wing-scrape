@@ -2,6 +2,8 @@
 
 A TypeScript-based web scraper and interactive CLI for analyzing Hot Ones episodes from TheTVDB. Dive into the spicy world of celebrity interviews with detailed episode data, statistics, and an engaging command-line interface.
 
+
+
 ## 🌶️ About Hot Ones
 
 Hot Ones is the show with hot questions and even hotter wings! This project scrapes episode data from TheTVDB to provide insights into the popular web series where celebrities eat progressively spicier chicken wings while answering intimate questions.
@@ -53,6 +55,15 @@ Once you run `npm run cli`, you'll be greeted with the Hot Ones Interactive CLI!
 
 ### Screenshot of Available Commands:
 
+<div align="center">
+  <img src="images/terminal-cli.png" alt="terminal hot ones cli" width="600"/>
+  <p><em>unofficial hot ones cli in action</em></p>
+</div>
+
+<div align="center">
+  <img src="images/terminal-scrape.png" alt="scraping TheTVDB" width="600"/>
+  <p><em>Scraping TheTVDB</em></p>
+</div>
 
 ## 📁 Output
 
