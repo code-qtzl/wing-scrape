@@ -8,11 +8,11 @@
 WingScrape is a TypeScript-based web scraper and interactive CLI for analyzing Hot Ones episodes from TheTVDB. Dive into the spicy world of celebrity interviews with detailed episode data, statistics, and an engaging command-line interface.
 
 > [!WARNING]
-> WingScrape is for educational purposes only and is not affiliated with Hot Ones, TheTVDB, or their respective owners. Created as part of the 2025 boot.dev hackathon.
+> WingScrape is for educational purposes only and is not affiliated with Hot Ones, TheTVDB, or their respective owners (I'm just a fan of the show, and of open source projects). Created as part of the 2025 boot.dev hackathon.
 
-## 🌶️ About Hot Ones
+## 🌶️ About WingScrape
 
-Hot Ones is the show with hot questions and even hotter wings! This project scrapes episode data from TheTVDB to provide insights into the popular web series where celebrities eat progressively spicier chicken wings while answering intimate questions.
+As a fan of the web series Hot Ones, I've watched this show for som time now, and I took advantage of this hackathon to build this project.  This project scrapes episode data from TheTVDB to provide insights into the Hot Ones show where celebrities eat progressively spicier chicken wings while answering intimate questions.
 
 ## ✨ Features
 
