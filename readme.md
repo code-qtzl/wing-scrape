@@ -2,7 +2,7 @@
 
 A TypeScript-based web scraper and interactive CLI for analyzing Hot Ones episodes from TheTVDB. Dive into the spicy world of celebrity interviews with detailed episode data, statistics, and an engaging command-line interface.
 
-> [!DISCLAIMER]
+> [!WARNING]
 > This project is for educational purposes only and is not affiliated with Hot Ones, TheTVDB, or their respective owners. Created as part of the 2025 boot.dev hackathon.
 
 ## 🌶️ About Hot Ones
