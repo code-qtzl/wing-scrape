@@ -57,13 +57,13 @@ Before you start your spicy journey, make sure you have:
 
 ## 🎮 Using the Interactive CLI
 
-Once you run `npm run cli`, you'll be greeted with the Hot Ones Interactive CLI! Here's what you can do:
+Once you run `npm run cli`, you'll be greeted with the Unofficial Hot Ones Interactive CLI! Here's what you can do:
 
 ### Screenshot of Available Commands:
 
 <div align="center">
   <img src="images/terminal-cli.png" alt="terminal hot ones cli" width="600"/>
-  <p><em>unofficial hot ones cli in action</em></p>
+  <p><em>Unofficial Hot Ones CLI in action</em></p>
 </div>
 
 <div align="center">
@@ -90,3 +90,4 @@ The project uses TypeScript with strict configuration. Check `tsconfig.json` for
 ## 📄 License
 
 ISC License - feel free to use this project to explore the spicy world of Hot Ones!
+
