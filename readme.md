@@ -12,7 +12,7 @@ WingScrape is a TypeScript-based web scraper and interactive CLI for analyzing t
 
 ## 🌶️ About WingScrape
 
-As a fan of the web series Hot Ones, I've watched this show for som time now, and I took advantage of this hackathon to build this project.  This project scrapes episode data from TheTVDB to provide insights into the Hot Ones show.
+As a fan of the web series Hot Ones, I've watched this show for some time now, and I took advantage of this hackathon to build this project.  This project scrapes episode data from TheTVDB to provide data of the Hot Ones show.
 
 ## ✨ Features
 
