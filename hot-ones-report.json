@@ -11235,5 +11235,47 @@
         ]
       }
     ]
+  },
+  {
+    "season_number": 27,
+    "episode_number": 0,
+    "title": "Pete Davidson Drinks All the Milk While Eating Spicy Wings",
+    "air_date": "2025-07-28",
+    "description": "Pete Davidson is an actor, writer, comedian, and former Saturday Night Live cast member who's since released many stand-up specials and comedies. Now, you can catch him doing stand-up in a city near you and he's starring in a pair of new films: The Pickup, streaming on Prime Video August 6th, and The Home, in theaters now. But how is he with spicy food? Find out as Davidson takes on the gauntlet for a second time and looks back on his early SNL days, shares the pros and cons of owning a decommissioned ferry boat, and reveals the embarrassing story behind a big tattoo cover up.",
+    "tags": [
+      {
+        "category": "Movie/TV",
+        "sub_categories": [
+          "Actor"
+        ]
+      },
+      {
+        "category": "Comedy",
+        "sub_categories": [
+          "Stand-up Comedian"
+        ]
+      },
+      {
+        "category": "Food/Culinary",
+        "sub_categories": [
+          "Chef"
+        ]
+      }
+    ]
+  },
+  {
+    "season_number": 27,
+    "episode_number": 11,
+    "title": "Cody Rhodes ..... While Eating Spicy Wings",
+    "air_date": "2025-07-31",
+    "description": "",
+    "tags": [
+      {
+        "category": "Other",
+        "sub_categories": [
+          "Unknown"
+        ]
+      }
+    ]
   }
 ]
