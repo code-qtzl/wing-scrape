@@ -2,7 +2,7 @@
 
 <div align="left">
   <img src="images/run-chicken.png" alt="terminal hot ones cli" width="300"/>
-  <p><em>Unofficial Hot Ones CLI</em></p>
+  <p><em>official (Unofficial) Hot Ones CLI</em></p>
 </div>
 
 ## 🌶️ About WingScrape
