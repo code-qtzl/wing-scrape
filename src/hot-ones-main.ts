@@ -2,6 +2,7 @@ import { HotOnesScraper } from './hot-ones-scraper';
 import { HotOnesEpisode } from './types';
 import * as fs from 'fs';
 import * as path from 'path';
+import Table from 'cli-table3';
 
 async function main(): Promise<void> {
 	try {
@@ -29,10 +30,23 @@ async function main(): Promise<void> {
 			ep.tags.length === 1 && ep.tags[0].category === 'Other' && ep.tags[0].sub_categories.includes('Unknown')
 		).length;
 
-		console.log(`Missing titles: ${missingTitles}`);
-		console.log(`Missing air dates: ${missingDates}`);
-		console.log(`Missing descriptions: ${missingDescriptions}`);
-		console.log(`Uncategorized episodes: ${uncategorized}`);
+		// Display summary in a table
+		const qualityTable = new Table({
+			head: ['Missing/Uncategorized', 'Total'],
+			style: { head: ['cyan'] },
+			chars: { 'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': '', 'bottom-mid': '', 'top-mid': '' },
+			// Adjust
+			colWidths: [30, 15]
+		});
+
+		qualityTable.push(
+			['Missing Titles', missingTitles.toString()],
+			['Missing Air Dates', missingDates.toString()],
+			['Missing Descriptions', missingDescriptions.toString()],
+			['Uncategorized Ep', uncategorized.toString()]
+		);
+
+		console.log(qualityTable.toString());
 
 		console.log('\n✅ Scraping completed successfully!');
 

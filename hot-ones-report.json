@@ -11265,15 +11265,36 @@
   },
   {
     "season_number": 27,
-    "episode_number": 11,
-    "title": "Cody Rhodes ..... While Eating Spicy Wings",
-    "air_date": "2025-07-31",
-    "description": "",
+    "episode_number": 0,
+    "title": "Bowen Yang vs. Matt Rogers",
+    "air_date": "2025-07-29",
+    "description": "Bowen Yang and Matt Rogers are the hilarious comedy duo behind the award winning “Las Culturistas” podcast. Together, they can be seen hosting the television debut of the \"Las Culturistas Culture Awards” on Bravo August 5. But today, these best friends will have two choices: Tell the truth, or suffer the wrath of the Last Dab. Whoever eats the most wings, loses!\n\nFrom Bowen's favorite childhood wrestler to Matt's biggest celebrity crush, they will either need to be honest or go head-to-head with the Wings of Death. Who would Bowen kick out of the Wicked group chat? Will Matt face his fears and walk under a ladder? Tune in to an all-new episode of Hot Ones Versus, and see who takes home the golden chicken wing trophy!",
     "tags": [
       {
-        "category": "Other",
+        "category": "Movie/TV",
         "sub_categories": [
-          "Unknown"
+          "Actor"
+        ]
+      },
+      {
+        "category": "Comedy",
+        "sub_categories": [
+          "Stand-up Comedian"
+        ]
+      }
+    ]
+  },
+  {
+    "season_number": 27,
+    "episode_number": 11,
+    "title": "Cody Rhodes Gets Power Slammed By Spicy Wings",
+    "air_date": "2025-07-31",
+    "description": "Cody Rhodes is one of WWE's most decorated superstars—an Undisputed WWE Champion, a two-time Royal Rumble winner, and a two-time Intercontinental Champion. He also has a brand new podcast on the WWE network called \"What Do You Wanna Talk About?\" But how is he with spicy food? Find out as \"The American Nightmare\" takes on the wings of death and discusses the public perception of WWE, pro-wrestling lingo, and lessons from his father, Dusty Rhodes.",
+    "tags": [
+      {
+        "category": "Food/Culinary",
+        "sub_categories": [
+          "Chef"
         ]
       }
     ]
