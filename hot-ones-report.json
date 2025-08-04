@@ -11298,5 +11298,33 @@
         ]
       }
     ]
+  },
+  {
+    "season_number": 27,
+    "episode_number": 0,
+    "title": "Jake Shane vs. Coco Jones",
+    "air_date": "2025-08-01",
+    "description": "Jake Shane is a comedian and host of the hit podcast \"Therapuss with Jake Shane,\" and Coco Jones is a Grammy-winning singer, songwriter, and actress you probably know from her work on Bel-Air. But today, these breakout stars have two choices: Tell the truth, or suffer the wrath of the Last Dab. Whoever eats the most wings, loses!\n\nFrom Jake trying dishes from his \"things I don't like list,\" to revealing embarrassing overshares, these two will either need to be honest, or go head-to-head with the Wings of Death. Can Jake rank his fellow podcast hosts from best to worst? Will Coco reveal which city she's least excited to perform for? Tune in to an all-new episode of Hot Ones Versus, and see who takes home the golden chicken wing trophy!",
+    "tags": [
+      {
+        "category": "Movie/TV",
+        "sub_categories": [
+          "Actress"
+        ]
+      },
+      {
+        "category": "Music",
+        "sub_categories": [
+          "Rapper",
+          "Singer"
+        ]
+      },
+      {
+        "category": "Comedy",
+        "sub_categories": [
+          "Stand-up Comedian"
+        ]
+      }
+    ]
   }
 ]
