@@ -1,5 +1,24 @@
 import { JSDOM } from 'jsdom';
 import { HotOnesEpisode, EpisodeTag, PROFESSION_TAXONOMY } from './types';
+import chalk from 'chalk';
+
+// Brand colors
+const colors = {
+	black: '#000000',
+	white: '#FFFFFF', 
+	yellow: '#FED204',
+	red: '#DA1F27'
+};
+
+// Styled chalk functions
+const brand = {
+	title: chalk.hex(colors.red).bold,
+	highlight: chalk.hex(colors.yellow).bold,
+	success: chalk.hex(colors.yellow),
+	error: chalk.hex(colors.red),
+	info: chalk.hex(colors.white),
+	dim: chalk.hex(colors.white).dim
+};
 
 export class HotOnesScraper {
 	private baseURL = 'https://thetvdb.com/series/hot-ones/allseasons/official';
@@ -7,10 +26,10 @@ export class HotOnesScraper {
 	async scrapeAllEpisodes(): Promise<HotOnesEpisode[]> {
 		// Add cache-busting parameter
 		const cacheBustingUrl = `${this.baseURL}?t=${Date.now()}`;
-		console.log(`🔥 Scraping Hot Ones episodes from: ${this.baseURL}`);
+		console.log(brand.info(`🕷️  Connecting to: ${this.baseURL}`));
 		
 		try {
-			console.log('📡 Fetching page...');
+			console.log(brand.highlight('📡 Fetching page data...'));
 			const controller = new AbortController();
 			const timeoutId = setTimeout(() => controller.abort(), 15000);
 			
@@ -35,20 +54,20 @@ export class HotOnesScraper {
 				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 			}
 
-			console.log('✅ Page fetched successfully');
+			console.log(brand.success('✅ Page fetched successfully'));
 			const html = await response.text();
-			console.log(`📄 HTML parsed (${html.length} characters)`);
+			console.log(brand.dim(`📄 HTML parsed (${html.length.toLocaleString()} characters)`));
 			
 			const dom = new JSDOM(html);
 			const document = dom.window.document;
 
-			console.log('🔍 Extracting episodes...');
+			console.log(brand.highlight('🔍 Extracting episode data...'));
 			const episodes = this.extractEpisodes(document);
-			console.log(`✅ Successfully scraped ${episodes.length} episodes`);
+			console.log(brand.success(`🎯 Successfully extracted ${episodes.length} episodes`));
 			
 			return episodes;
 		} catch (error) {
-			console.error('❌ Error scraping Hot Ones episodes:', error);
+			console.error(brand.error('❌ Error scraping Hot Ones episodes:'), error);
 			throw error;
 		}
 	}

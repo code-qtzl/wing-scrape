@@ -95,14 +95,29 @@ export class HotOnesInteractiveCLI {
 	private showWelcomeMessage(): void {
 		console.log(brand.title('🌶️  Welcome to the (Unofficial) Hot Ones CLI! 🌶️'));
 		console.log(brand.info(`📺 ${this.episodes.length} episodes available (1-${this.episodes.length})`));
-		console.log(brand.highlight('\n📋 Commands:'));
-		console.log(brand.info('  • Enter episode number (1-554) to view episode details'));
-		console.log(brand.info('  • "random" or "r" - Show a random episode'));
-		console.log(brand.info('  • "stats" or "s" - Show episode statistics'));
-		console.log(brand.info('  • "search [term]" - Search episodes by title or guest name'));
-		console.log(brand.info('  • "season [number]" - List all episodes from a specific season'));
-		console.log(brand.info('  • "help" or "h" - Show this help message'));
-		console.log(brand.info('  • "quit" or "q" - Exit the browser'));
+		
+		// Commands table
+		const commandsTable = new Table({
+			head: [brand.highlight('Type Command'), brand.highlight('What Command Does')],
+			style: { 
+				head: [],
+				border: ['dim']
+			},
+			colWidths: [20, 50]
+		});
+
+		commandsTable.push(
+			[brand.success('1-554'), brand.info('View episode details by number')],
+			[brand.success('random, r'), brand.info('Show a random episode')],
+			[brand.success('stats, s'), brand.info('Show episode statistics')],
+			[brand.success('search [term]'), brand.info('Search episodes by title or guest name')],
+			[brand.success('season [number]'), brand.info('List all episodes from a specific season')],
+			[brand.success('help, h'), brand.info('Show this help message')],
+			[brand.success('quit, q'), brand.info('Exit the CLI')]
+		);
+
+		console.log(brand.highlight('\n📋 Available Commands:'));
+		console.log(commandsTable.toString());
 		console.log('\n' + brand.dim('='.repeat(60)) + '\n');
 	}
 
@@ -188,17 +203,57 @@ export class HotOnesInteractiveCLI {
 		const episode = this.episodes[episodeNumber - 1];
 		
 		console.log('\n' + brand.dim('='.repeat(80)));
-		console.log(brand.title(`🍗 ${episodeNumber}. ${episode.title}`));
-		console.log(brand.info(`   Season ${episode.season_number}, Episode ${episode.episode_number}`));
-		console.log(brand.info(`   Air Date: ${episode.air_date}`));
-		console.log(brand.info(`   Categories: ${episode.tags.map(t => t.category).join(', ')}`));
-		if (episode.tags.length > 0) {
-			console.log(brand.dim(`   Sub-categories: ${episode.tags.flatMap(t => t.sub_categories).join(', ')}`));
+		console.log(brand.title(`🍗 Episode ${episodeNumber}: ${episode.title}`));
+		console.log(brand.dim('='.repeat(80)));
+		
+		// Episode details table
+		const detailsTable = new Table({
+			style: { 
+				head: [],
+				border: ['dim']
+			},
+			colWidths: [20, 55]
+		});
+
+		detailsTable.push(
+			[brand.highlight('Season'), brand.info(`${episode.season_number}`)],
+			[brand.highlight('Episode'), brand.info(`${episode.episode_number}`)],
+			[brand.highlight('Air Date'), brand.success(`${episode.air_date}`)],
+			[brand.highlight('Categories'), brand.info(`${episode.tags.map(t => t.category).join(', ')}`)],
+		);
+
+		if (episode.tags.length > 0 && episode.tags.flatMap(t => t.sub_categories).length > 0) {
+			detailsTable.push([brand.highlight('Sub-categories'), brand.dim(`${episode.tags.flatMap(t => t.sub_categories).join(', ')}`)]);
 		}
-		if (episode.description) {
-			console.log(brand.dim(`   Description: ${episode.description}`));
+
+		console.log(detailsTable.toString());
+
+		// Description section
+		if (episode.description && episode.description.trim() !== '') {
+			console.log(brand.highlight('\n📝 Episode Description:'));
+			
+			// Format description with better text wrapping
+			const maxWidth = 75;
+			const words = episode.description.split(' ');
+			let lines = [];
+			let currentLine = '';
+			
+			words.forEach(word => {
+				if ((currentLine + word).length <= maxWidth) {
+					currentLine += (currentLine ? ' ' : '') + word;
+				} else {
+					if (currentLine) lines.push(currentLine);
+					currentLine = word;
+				}
+			});
+			if (currentLine) lines.push(currentLine);
+			
+			lines.forEach(line => {
+				console.log(brand.info(`   ${line}`));
+			});
 		}
-		console.log(brand.dim('='.repeat(80)) + '\n');
+		
+		console.log('\n' + brand.dim('='.repeat(80)) + '\n');
 	}
 
 	private showStats(): void {
@@ -223,14 +278,22 @@ export class HotOnesInteractiveCLI {
 			head: [brand.highlight('Season'), brand.highlight('Episodes')],
 			style: { 
 				head: [],
-				border: ['dim']
+				border: ['dim'],
+				'padding-left': 1,
+				'padding-right': 1
+			},
+			chars: {
+				'mid': '',
+				'left-mid': '',
+				'mid-mid': '',
+				'right-mid': ''
 			}
 		});
 
 		Object.entries(seasonCounts)
 			.sort(([a], [b]) => parseInt(a) - parseInt(b))
 			.forEach(([season, count]) => {
-				seasonTable.push([brand.info(`Season ${season}`), brand.success(count.toString())]);
+				seasonTable.push([brand.info(`${season}`), brand.success(count.toString())]);
 			});
 
 		console.log(brand.highlight('🎬 Episodes per Season:'));
@@ -241,7 +304,15 @@ export class HotOnesInteractiveCLI {
 			head: [brand.highlight('Category'), brand.highlight('Episodes')],
 			style: { 
 				head: [],
-				border: ['dim']
+				border: ['dim'],
+				'padding-left': 1,
+				'padding-right': 1
+			},
+			chars: {
+				'mid': '',
+				'left-mid': '',
+				'mid-mid': '',
+				'right-mid': ''
 			}
 		});
 
