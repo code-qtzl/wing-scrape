@@ -1,13 +1,14 @@
 import { JSDOM } from 'jsdom';
 import { HotOnesEpisode, EpisodeTag, PROFESSION_TAXONOMY } from './types';
+import { YouTubeRSSEnhancer, YouTubeVideoData } from './youtube-rss-enhancer';
 import chalk from 'chalk';
 
 // Brand colors
 const colors = {
 	black: '#000000',
-	white: '#FFFFFF', 
+	white: '#FFFFFF',
 	yellow: '#FED204',
-	red: '#DA1F27'
+	red: '#DA1F27',
 };
 
 // Styled chalk functions
@@ -17,67 +18,91 @@ const brand = {
 	success: chalk.hex(colors.yellow),
 	error: chalk.hex(colors.red),
 	info: chalk.hex(colors.white),
-	dim: chalk.hex(colors.white).dim
+	dim: chalk.hex(colors.white).dim,
 };
 
 export class HotOnesScraper {
 	private baseURL = 'https://thetvdb.com/series/hot-ones/allseasons/official';
+	private youtubeEnhancer = new YouTubeRSSEnhancer();
 
 	async scrapeAllEpisodes(): Promise<HotOnesEpisode[]> {
 		// Add cache-busting parameter
 		const cacheBustingUrl = `${this.baseURL}?t=${Date.now()}`;
 		console.log(brand.info(`🕷️  Connecting to: ${this.baseURL}`));
-		
+
 		try {
 			console.log(brand.highlight('📡 Fetching page data...'));
 			const controller = new AbortController();
 			const timeoutId = setTimeout(() => controller.abort(), 15000);
-			
+
 			const response = await fetch(this.baseURL, {
 				signal: controller.signal,
 				headers: {
-					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+					'User-Agent':
+						'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
 					'Cache-Control': 'no-cache',
-					'Pragma': 'no-cache',
-					'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+					Pragma: 'no-cache',
+					Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
 					'Accept-Language': 'en-US,en;q=0.5',
 					'Accept-Encoding': 'gzip, deflate, br',
-					'DNT': '1',
-					'Connection': 'keep-alive',
-					'Upgrade-Insecure-Requests': '1'
-				}
+					DNT: '1',
+					Connection: 'keep-alive',
+					'Upgrade-Insecure-Requests': '1',
+				},
 			});
-			
+
 			clearTimeout(timeoutId);
-			
+
 			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+				throw new Error(
+					`HTTP ${response.status}: ${response.statusText}`,
+				);
 			}
 
 			console.log(brand.success('✅ Page fetched successfully'));
 			const html = await response.text();
-			console.log(brand.dim(`📄 HTML parsed (${html.length.toLocaleString()} characters)`));
-			
+			console.log(
+				brand.dim(
+					`📄 HTML parsed (${html.length.toLocaleString()} characters)`,
+				),
+			);
+
 			const dom = new JSDOM(html);
 			const document = dom.window.document;
 
 			console.log(brand.highlight('🔍 Extracting episode data...'));
 			const episodes = this.extractEpisodes(document);
-			console.log(brand.success(`🎯 Successfully extracted ${episodes.length} episodes`));
-			
-			return episodes;
+
+			// Enhance with YouTube data
+			console.log(brand.highlight('📺 Enhancing with YouTube data...'));
+			const enhancedEpisodes = await this.enhanceWithYouTubeData(
+				episodes,
+			);
+
+			console.log(
+				brand.success(
+					`🎯 Successfully extracted ${enhancedEpisodes.length} episodes`,
+				),
+			);
+
+			return enhancedEpisodes;
 		} catch (error) {
-			console.error(brand.error('❌ Error scraping Hot Ones episodes:'), error);
+			console.error(
+				brand.error('❌ Error scraping Hot Ones episodes:'),
+				error,
+			);
 			throw error;
 		}
 	}
 
 	private extractEpisodes(document: Document): HotOnesEpisode[] {
 		const episodes: HotOnesEpisode[] = [];
-		
+
 		console.log('🔍 Looking for season containers...');
 		// Find all season containers
-		const seasonHeaders = document.querySelectorAll('h3 a[href*="/seasons/official/"]');
+		const seasonHeaders = document.querySelectorAll(
+			'h3 a[href*="/seasons/official/"]',
+		);
 		console.log(`Found ${seasonHeaders.length} seasons`);
 
 		console.log(`📺 Parsing through Seasons`);
@@ -85,43 +110,61 @@ export class HotOnesScraper {
 			const seasonText = seasonHeader.textContent?.trim() || '';
 			const seasonMatch = seasonText.match(/Season (\d+)/);
 			const seasonNumber = seasonMatch ? parseInt(seasonMatch[1], 10) : 0;
-			
+
 			// console.log(`📺 Processing Season ${seasonNumber}...`);  // Show how many seasons found
-			
+
 			// Find the episode list for this season
-			const seasonContainer = seasonHeader.closest('h3')?.nextElementSibling;
+			const seasonContainer =
+				seasonHeader.closest('h3')?.nextElementSibling;
 			if (seasonContainer?.classList.contains('list-group')) {
-				const episodeItems = seasonContainer.querySelectorAll('.list-group-item');
+				const episodeItems =
+					seasonContainer.querySelectorAll('.list-group-item');
 				// console.log(`  Found ${episodeItems.length} episodes in Season ${seasonNumber}`); // Show how many episodes in this season found
-				
+
 				for (const episodeItem of episodeItems) {
-					const episode = this.extractEpisodeFromItem(episodeItem as Element, seasonNumber);
+					const episode = this.extractEpisodeFromItem(
+						episodeItem as Element,
+						seasonNumber,
+					);
 					if (episode) {
 						episodes.push(episode);
 					}
 				}
 			} else {
-				console.warn(`  No episode list found for Season ${seasonNumber}`);
+				console.warn(
+					`  No episode list found for Season ${seasonNumber}`,
+				);
 			}
 		}
-		
+
 		console.log(`✅ Extracted ${episodes.length} total episodes`);
 		return episodes;
 	}
 
-	private extractEpisodeFromItem(episodeItem: Element, seasonNumber: number): HotOnesEpisode | null {
+	private extractEpisodeFromItem(
+		episodeItem: Element,
+		seasonNumber: number,
+	): HotOnesEpisode | null {
 		try {
 			// Extract episode number from span with class "episode-label"
-			const episodeLabel = episodeItem.querySelector('.episode-label')?.textContent?.trim() || '';
+			const episodeLabel =
+				episodeItem
+					.querySelector('.episode-label')
+					?.textContent?.trim() || '';
 			const episodeMatch = episodeLabel.match(/S\d+E(\d+)/);
-			const episodeNumber = episodeMatch ? parseInt(episodeMatch[1], 10) : 0;
+			const episodeNumber = episodeMatch
+				? parseInt(episodeMatch[1], 10)
+				: 0;
 
 			// Extract title from the episode link
-			const titleElement = episodeItem.querySelector('h4.list-group-item-heading a');
+			const titleElement = episodeItem.querySelector(
+				'h4.list-group-item-heading a',
+			);
 			const title = titleElement?.textContent?.trim() || '';
 
 			// Extract air date from list-inline items
-			const dateElements = episodeItem.querySelectorAll('.list-inline li');
+			const dateElements =
+				episodeItem.querySelectorAll('.list-inline li');
 			let airDate = '';
 			for (const dateElement of dateElements) {
 				const text = dateElement.textContent?.trim() || '';
@@ -133,14 +176,18 @@ export class HotOnesScraper {
 			}
 
 			// Extract description from the episode text
-			const descriptionElement = episodeItem.querySelector('.list-group-item-text p');
+			const descriptionElement = episodeItem.querySelector(
+				'.list-group-item-text p',
+			);
 			const description = descriptionElement?.textContent?.trim() || '';
 
 			// Generate tags based on title and description
 			const tags = this.categorizeProfession(title, description);
 
 			if (!title) {
-				console.warn(`Skipping episode with missing title in season ${seasonNumber}`);
+				console.warn(
+					`Skipping episode with missing title in season ${seasonNumber}`,
+				);
 				return null;
 			}
 
@@ -150,7 +197,7 @@ export class HotOnesScraper {
 				title,
 				air_date: airDate,
 				description,
-				tags
+				tags,
 			};
 		} catch (error) {
 			console.error('Error extracting episode data:', error);
@@ -168,51 +215,114 @@ export class HotOnesScraper {
 		}
 	}
 
-	private categorizeProfession(title: string, description: string): EpisodeTag[] {
+	private categorizeProfession(
+		title: string,
+		description: string,
+	): EpisodeTag[] {
 		const combinedText = `${title} ${description}`.toLowerCase();
 		const tags: EpisodeTag[] = [];
 
 		// Keywords for each category
 		const categoryKeywords = {
-			"Movie/TV": [
-				"actor", "actress", "acting", "film", "movie", "director", "producer", 
-				"television", "tv show", "series", "hollywood", "cinema", "screenwriter"
+			'Movie/TV': [
+				'actor',
+				'actress',
+				'acting',
+				'film',
+				'movie',
+				'director',
+				'producer',
+				'television',
+				'tv show',
+				'series',
+				'hollywood',
+				'cinema',
+				'screenwriter',
 			],
-			"Music": [
-				"singer", "rapper", "musician", "album", "song", "music", "band", 
-				"artist", "grammy", "billboard", "record", "songwriter", "dj"
+			Music: [
+				'singer',
+				'rapper',
+				'musician',
+				'album',
+				'song',
+				'music',
+				'band',
+				'artist',
+				'grammy',
+				'billboard',
+				'record',
+				'songwriter',
+				'dj',
 			],
-			"Comedy": [
-				"comedian", "comedy", "stand-up", "standup", "sketch", "funny", 
-				"humor", "snl", "saturday night live", "comic"
+			Comedy: [
+				'comedian',
+				'comedy',
+				'stand-up',
+				'standup',
+				'sketch',
+				'funny',
+				'humor',
+				'snl',
+				'saturday night live',
+				'comic',
 			],
-			"Sports": [
-				"player", "athlete", "sports", "basketball", "football", "baseball", 
-				"soccer", "tennis", "olympics", "nba", "nfl", "mlb", "championship"
+			Sports: [
+				'player',
+				'athlete',
+				'sports',
+				'basketball',
+				'football',
+				'baseball',
+				'soccer',
+				'tennis',
+				'olympics',
+				'nba',
+				'nfl',
+				'mlb',
+				'championship',
 			],
-			"Food/Culinary": [
-				"chef", "cook", "restaurant", "culinary", "food", "kitchen", 
-				"cuisine", "michelin", "cookbook"
+			'Food/Culinary': [
+				'chef',
+				'cook',
+				'restaurant',
+				'culinary',
+				'food',
+				'kitchen',
+				'cuisine',
+				'michelin',
+				'cookbook',
 			],
-			"Internet/Social Media": [
-				"youtuber", "youtube", "tiktoker", "tiktok", "streamer", "twitch", 
-				"influencer", "social media", "viral", "content creator"
-			]
+			'Internet/Social Media': [
+				'youtuber',
+				'youtube',
+				'tiktoker',
+				'tiktok',
+				'streamer',
+				'twitch',
+				'influencer',
+				'social media',
+				'viral',
+				'content creator',
+			],
 		};
 
 		// Check each category
 		for (const [category, keywords] of Object.entries(categoryKeywords)) {
-			const matchedKeywords = keywords.filter(keyword => 
-				combinedText.includes(keyword)
+			const matchedKeywords = keywords.filter((keyword) =>
+				combinedText.includes(keyword),
 			);
 
 			if (matchedKeywords.length > 0) {
 				// Determine sub-categories based on matched keywords
-				const subCategories = this.determineSubCategories(category, matchedKeywords, combinedText);
-				
+				const subCategories = this.determineSubCategories(
+					category,
+					matchedKeywords,
+					combinedText,
+				);
+
 				tags.push({
 					category,
-					sub_categories: subCategories
+					sub_categories: subCategories,
 				});
 			}
 		}
@@ -220,40 +330,48 @@ export class HotOnesScraper {
 		// If no categories matched, use "Other"
 		if (tags.length === 0) {
 			tags.push({
-				category: "Other",
-				sub_categories: ["Unknown"]
+				category: 'Other',
+				sub_categories: ['Unknown'],
 			});
 		}
 
 		return tags;
 	}
 
-	private determineSubCategories(category: string, matchedKeywords: string[], text: string): string[] {
+	private determineSubCategories(
+		category: string,
+		matchedKeywords: string[],
+		text: string,
+	): string[] {
 		const subCategories: string[] = [];
 		const taxonomySubCategories = PROFESSION_TAXONOMY[category] || [];
 
 		// More specific keyword matching for sub-categories
 		const subCategoryKeywords = {
-			"Actor": ["actor", "acting"],
-			"Actress": ["actress"],
-			"Director": ["director", "directing"],
-			"Producer": ["producer", "producing"],
-			"Rapper": ["rapper", "rap", "hip hop", "hip-hop"],
-			"Singer": ["singer", "singing", "vocalist"],
-			"Musician": ["musician", "music"],
-			"Stand-up Comedian": ["stand-up", "standup"],
-			"Basketball Player": ["basketball", "nba"],
-			"Football Player": ["football", "nfl"],
-			"Chef": ["chef", "cook"],
-			"YouTuber": ["youtube", "youtuber"],
-			"TikToker": ["tiktok", "tiktoker"],
-			"Streamer": ["streamer", "twitch"]
+			Actor: ['actor', 'acting'],
+			Actress: ['actress'],
+			Director: ['director', 'directing'],
+			Producer: ['producer', 'producing'],
+			Rapper: ['rapper', 'rap', 'hip hop', 'hip-hop'],
+			Singer: ['singer', 'singing', 'vocalist'],
+			Musician: ['musician', 'music'],
+			'Stand-up Comedian': ['stand-up', 'standup'],
+			'Basketball Player': ['basketball', 'nba'],
+			'Football Player': ['football', 'nfl'],
+			Chef: ['chef', 'cook'],
+			YouTuber: ['youtube', 'youtuber'],
+			TikToker: ['tiktok', 'tiktoker'],
+			Streamer: ['streamer', 'twitch'],
 		};
 
 		// Check for specific sub-category matches
-		for (const [subCategory, keywords] of Object.entries(subCategoryKeywords)) {
+		for (const [subCategory, keywords] of Object.entries(
+			subCategoryKeywords,
+		)) {
 			if (taxonomySubCategories.includes(subCategory)) {
-				const hasMatch = keywords.some(keyword => text.includes(keyword));
+				const hasMatch = keywords.some((keyword) =>
+					text.includes(keyword),
+				);
 				if (hasMatch) {
 					subCategories.push(subCategory);
 				}
@@ -266,5 +384,136 @@ export class HotOnesScraper {
 		}
 
 		return subCategories;
+	}
+
+	private async enhanceWithYouTubeData(
+		episodes: HotOnesEpisode[],
+	): Promise<HotOnesEpisode[]> {
+		try {
+			const youtubeData = await this.youtubeEnhancer.fetchYouTubeData();
+			let matchedCount = 0;
+
+			const enhancedEpisodes = episodes.map((episode) => {
+				const youtubeVideo = this.findMatchingYouTubeVideo(
+					episode,
+					youtubeData,
+				);
+
+				if (youtubeVideo) {
+					matchedCount++;
+					console.log(
+						brand.dim(`  ✓ Direct match: ${episode.title}`),
+					);
+					return {
+						...episode,
+						youtube_url: youtubeVideo.youtube_url,
+						youtube_video_id: youtubeVideo.video_id,
+						youtube_thumbnail: youtubeVideo.thumbnail_url,
+						youtube_views: youtubeVideo.view_count,
+						youtube_published_date: youtubeVideo.published_date,
+					};
+				} else {
+					// Generate fallback search URL for episodes without direct links
+					const searchUrl =
+						this.youtubeEnhancer.generateYouTubeSearchUrl(
+							episode.title,
+							episode.season_number,
+							episode.episode_number,
+						);
+
+					console.log(
+						brand.dim(`  → Search fallback: ${episode.title}`),
+					);
+					return {
+						...episode,
+						youtube_search_url: searchUrl,
+					};
+				}
+			});
+
+			console.log(
+				brand.success(
+					`📺 Enhanced ${matchedCount}/${episodes.length} episodes with direct YouTube links`,
+				),
+			);
+			console.log(
+				brand.info(
+					`🔍 Generated search URLs for ${
+						episodes.length - matchedCount
+					} episodes`,
+				),
+			);
+			return enhancedEpisodes;
+		} catch (error) {
+			console.error(
+				brand.error('❌ Error enhancing with YouTube data:'),
+				error,
+			);
+			return episodes; // Return original episodes if enhancement fails
+		}
+	}
+
+	private findMatchingYouTubeVideo(
+		episode: HotOnesEpisode,
+		youtubeData: Map<string, YouTubeVideoData>,
+	): YouTubeVideoData | null {
+		// Try multiple matching strategies
+		const searchKeys = [
+			episode.title.toLowerCase().trim(),
+			episode.title
+				.toLowerCase()
+				.replace(/^hot ones[:\-\s]*/i, '')
+				.trim(),
+			episode.title.toLowerCase().split('|')[0].trim(),
+			episode.title.toLowerCase().split('–')[0].trim(),
+			episode.title.toLowerCase().split('-')[0].trim(),
+			// Extract guest name before common separators
+			episode.title.toLowerCase().split(' eats ')[0].trim(),
+			episode.title.toLowerCase().split(' vs ')[0].trim(),
+		];
+
+		// Remove duplicates and empty strings
+		const uniqueKeys = [...new Set(searchKeys)].filter(
+			(key) => key.length > 2,
+		);
+
+		for (const key of uniqueKeys) {
+			const match = youtubeData.get(key);
+			if (match) {
+				return match;
+			}
+		}
+
+		// Fuzzy matching - check if any YouTube video title contains episode title parts
+		const episodeTitleWords = episode.title
+			.toLowerCase()
+			.split(/\s+/)
+			.filter(
+				(word) =>
+					word.length > 3 &&
+					!['hot', 'ones', 'the', 'and', 'with', 'eats'].includes(
+						word,
+					),
+			);
+
+		for (const [key, video] of youtubeData) {
+			const videoTitleWords = video.title.toLowerCase().split(/\s+/);
+			const matchingWords = episodeTitleWords.filter((word) =>
+				videoTitleWords.some(
+					(videoWord) =>
+						videoWord.includes(word) || word.includes(videoWord),
+				),
+			);
+
+			// If most of the meaningful words match, consider it a match
+			if (
+				matchingWords.length >=
+				Math.min(2, episodeTitleWords.length * 0.6)
+			) {
+				return video;
+			}
+		}
+
+		return null;
 	}
 }

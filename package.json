@@ -9,7 +9,8 @@
 	},
 	"scripts": {
 		"scrape": "ts-node src/hot-ones-main.ts",
-		"cli": "ts-node src/interactive-cli.ts"
+		"cli": "ts-node src/interactive-cli.ts",
+		"test": "jest"
 	},
 	"repository": {
 		"type": "git",
@@ -35,6 +36,7 @@
 		"chalk-animation": "^2.0.3",
 		"cli-table3": "^0.6.5",
 		"jsdom": "^24.1.1",
-		"patch-package": "^8.0.0"
+		"patch-package": "^8.0.0",
+		"rss-parser": "^3.13.0"
 	}
 }
