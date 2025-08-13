@@ -1,6 +1,5 @@
 import { JSDOM } from 'jsdom';
 import { HotOnesEpisode, EpisodeTag, PROFESSION_TAXONOMY } from './types';
-import { YouTubeRSSEnhancer, YouTubeVideoData } from './youtube-rss-enhancer';
 import chalk from 'chalk';
 
 // Brand colors
@@ -23,7 +22,6 @@ const brand = {
 
 export class HotOnesScraper {
 	private baseURL = 'https://thetvdb.com/series/hot-ones/allseasons/official';
-	private youtubeEnhancer = new YouTubeRSSEnhancer();
 
 	async scrapeAllEpisodes(): Promise<HotOnesEpisode[]> {
 		// Add cache-busting parameter
@@ -73,19 +71,13 @@ export class HotOnesScraper {
 			console.log(brand.highlight('🔍 Extracting episode data...'));
 			const episodes = this.extractEpisodes(document);
 
-			// Enhance with YouTube data
-			console.log(brand.highlight('📺 Enhancing with YouTube data...'));
-			const enhancedEpisodes = await this.enhanceWithYouTubeData(
-				episodes,
-			);
-
 			console.log(
 				brand.success(
-					`🎯 Successfully extracted ${enhancedEpisodes.length} episodes`,
+					`🎯 Successfully extracted ${episodes.length} episodes`,
 				),
 			);
 
-			return enhancedEpisodes;
+			return episodes;
 		} catch (error) {
 			console.error(
 				brand.error('❌ Error scraping Hot Ones episodes:'),
@@ -384,135 +376,5 @@ export class HotOnesScraper {
 		}
 
 		return subCategories;
-	}
-
-	private async enhanceWithYouTubeData(
-		episodes: HotOnesEpisode[],
-	): Promise<HotOnesEpisode[]> {
-		try {
-			const youtubeData = await this.youtubeEnhancer.fetchYouTubeData();
-			let matchedCount = 0;
-
-			const enhancedEpisodes = episodes.map((episode) => {
-				const youtubeVideo = this.findMatchingYouTubeVideo(
-					episode,
-					youtubeData,
-				);
-
-				if (youtubeVideo) {
-					matchedCount++;
-					console.log(
-						brand.dim(`  ✓ Direct match: ${episode.title}`),
-					);
-					return {
-						...episode,
-						youtube_url: youtubeVideo.youtube_url,
-						youtube_video_id: youtubeVideo.video_id,
-						youtube_views: youtubeVideo.view_count,
-						youtube_published_date: youtubeVideo.published_date,
-					};
-				} else {
-					// Generate fallback search URL for episodes without direct links
-					const searchUrl =
-						this.youtubeEnhancer.generateYouTubeSearchUrl(
-							episode.title,
-							episode.season_number,
-							episode.episode_number,
-						);
-
-					console.log(
-						brand.dim(`  → Search fallback: ${episode.title}`),
-					);
-					return {
-						...episode,
-						youtube_search_url: searchUrl,
-					};
-				}
-			});
-
-			console.log(
-				brand.success(
-					`📺 Enhanced ${matchedCount}/${episodes.length} episodes with direct YouTube links`,
-				),
-			);
-			console.log(
-				brand.info(
-					`🔍 Generated search URLs for ${
-						episodes.length - matchedCount
-					} episodes`,
-				),
-			);
-			return enhancedEpisodes;
-		} catch (error) {
-			console.error(
-				brand.error('❌ Error enhancing with YouTube data:'),
-				error,
-			);
-			return episodes; // Return original episodes if enhancement fails
-		}
-	}
-
-	private findMatchingYouTubeVideo(
-		episode: HotOnesEpisode,
-		youtubeData: Map<string, YouTubeVideoData>,
-	): YouTubeVideoData | null {
-		// Try multiple matching strategies
-		const searchKeys = [
-			episode.title.toLowerCase().trim(),
-			episode.title
-				.toLowerCase()
-				.replace(/^hot ones[:\-\s]*/i, '')
-				.trim(),
-			episode.title.toLowerCase().split('|')[0].trim(),
-			episode.title.toLowerCase().split('–')[0].trim(),
-			episode.title.toLowerCase().split('-')[0].trim(),
-			// Extract guest name before common separators
-			episode.title.toLowerCase().split(' eats ')[0].trim(),
-			episode.title.toLowerCase().split(' vs ')[0].trim(),
-		];
-
-		// Remove duplicates and empty strings
-		const uniqueKeys = [...new Set(searchKeys)].filter(
-			(key) => key.length > 2,
-		);
-
-		for (const key of uniqueKeys) {
-			const match = youtubeData.get(key);
-			if (match) {
-				return match;
-			}
-		}
-
-		// Fuzzy matching - check if any YouTube video title contains episode title parts
-		const episodeTitleWords = episode.title
-			.toLowerCase()
-			.split(/\s+/)
-			.filter(
-				(word) =>
-					word.length > 3 &&
-					!['hot', 'ones', 'the', 'and', 'with', 'eats'].includes(
-						word,
-					),
-			);
-
-		for (const [key, video] of youtubeData) {
-			const videoTitleWords = video.title.toLowerCase().split(/\s+/);
-			const matchingWords = episodeTitleWords.filter((word) =>
-				videoTitleWords.some(
-					(videoWord) =>
-						videoWord.includes(word) || word.includes(videoWord),
-				),
-			);
-
-			// If most of the meaningful words match, consider it a match
-			if (
-				matchingWords.length >=
-				Math.min(2, episodeTitleWords.length * 0.6)
-			) {
-				return video;
-			}
-		}
-
-		return null;
 	}
 }

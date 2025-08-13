@@ -318,32 +318,11 @@ export class HotOnesInteractiveCLI {
 			]);
 		}
 
-		// Add YouTube data if available
-		if (episode.youtube_url) {
-			detailsTable.push([
-				brand.highlight('YouTube'),
-				brand.success('✅ Direct Link'),
-			]);
-		} else if (episode.youtube_search_url) {
-			detailsTable.push([
-				brand.highlight('YouTube'),
-				brand.dim('🔍 Search Available'),
-			]);
-		}
-
-		if (episode.youtube_views && episode.youtube_views > 0) {
-			detailsTable.push([
-				brand.highlight('Views'),
-				brand.info(`${episode.youtube_views.toLocaleString()}`),
-			]);
-		}
-
-		if (episode.youtube_published_date) {
-			detailsTable.push([
-				brand.highlight('YT Published'),
-				brand.dim(`${episode.youtube_published_date}`),
-			]);
-		}
+		// Add YouTube search functionality
+		detailsTable.push([
+			brand.highlight('YouTube Search'),
+			brand.info('🔍 Search Available'),
+		]);
 
 		console.log(detailsTable.toString());
 
@@ -373,47 +352,24 @@ export class HotOnesInteractiveCLI {
 			});
 		}
 
-		// YouTube actions with enhanced styling
-		if (episode.youtube_url) {
-			console.log(brand.title('🎥 YOUTUBE VIDEO (DIRECT LINK)'));
-			console.log(brand.info(`🔗 ${episode.youtube_url}`));
+		// YouTube actions with enhanced styling - always show search
+		const youtubeSearchUrl = this.generateYouTubeSearchUrl(episode);
+		console.log(brand.title('🔍 YOUTUBE SEARCH FOR THIS EPISODE'));
+		console.log(brand.info(`🔗 ${youtubeSearchUrl}`));
+		console.log(
+			brand.dim(
+				"This will search YouTube for the specific episode you're viewing",
+			),
+		);
 
-			console.log(
-				brand.highlight(
-					'🔥 Type [Y] and press Enter to open video, [C] to copy link, or just press Enter to continue... 🔥',
-				),
-			);
+		console.log(
+			brand.highlight(
+				'🔥 Type [Y] and press Enter to open search, [C] to copy search link, or just press Enter to continue... 🔥',
+			),
+		);
 
-			// Handle user input for YouTube actions
-			await this.handleYouTubeActions(episode.youtube_url);
-		} else if (episode.youtube_search_url) {
-			console.log(brand.error('\n' + '🔍 '.repeat(10)));
-			console.log(
-				brand.title('🔍 YOUTUBE SEARCH (EPISODE NOT IN RECENT FEED)'),
-			);
-			console.log(brand.error('🔍 '.repeat(10)));
-			console.log(brand.info(`🔗 ${episode.youtube_search_url}`));
-			console.log(
-				brand.dim('This will search YouTube for the specific episode'),
-			);
-
-			console.log(
-				brand.highlight(
-					'🔥 Type [Y] and press Enter to open search, [C] to copy search link, or just press Enter to continue... 🔥',
-				),
-			);
-
-			// Handle user input for YouTube search actions
-			await this.handleYouTubeActions(episode.youtube_search_url);
-		} else {
-			console.log(brand.error('\n' + '❌ '.repeat(20)));
-			console.log(
-				brand.dim(
-					'❌ NO YOUTUBE LINK OR SEARCH AVAILABLE FOR THIS EPISODE',
-				),
-			);
-			console.log(brand.error('❌ '.repeat(20)));
-		}
+		// Handle user input for YouTube search actions
+		await this.handleYouTubeActions(youtubeSearchUrl);
 
 		console.log('\n' + brand.error('🔥'.repeat(20)) + '\n');
 	}
@@ -709,6 +665,23 @@ export class HotOnesInteractiveCLI {
 			console.log(brand.error('❌ Error copying to clipboard:'), error);
 			console.log(brand.info(`🔗 Manual copy: ${text}`));
 		}
+	}
+
+	private generateYouTubeSearchUrl(episode: HotOnesEpisode): string {
+		// Create a simple search query with just the guest name
+		const cleanTitle = episode.title
+			.replace(/^hot ones[:\-\s]*/i, '') // Remove "Hot Ones" prefix
+			.replace(/\s*\|\s*.*$/, '') // Remove everything after | separator
+			.replace(/\s*–\s*.*$/, '') // Remove everything after – separator
+			.replace(/\s*-\s*.*$/, '') // Remove everything after - separator
+			.replace(/\s+eats\s+.*$/i, '') // Remove "eats spicy wings" etc.
+			.replace(/\s+while\s+.*$/i, '') // Remove "while eating..." etc.
+			.trim();
+
+		// Simple search: "Hot Ones" + guest name
+		const searchQuery = `Hot Ones ${cleanTitle}`;
+		const query = encodeURIComponent(searchQuery);
+		return `https://www.youtube.com/results?search_query=${query}`;
 	}
 
 	private close(): void {

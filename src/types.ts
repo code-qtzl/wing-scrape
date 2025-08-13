@@ -5,13 +5,6 @@ export interface HotOnesEpisode {
 	air_date: string;
 	description: string;
 	tags: EpisodeTag[];
-	// YouTube data from RSS feed
-	youtube_url?: string;
-	youtube_video_id?: string;
-	youtube_views?: number;
-	youtube_published_date?: string;
-	// Fallback search URL when direct link not available
-	youtube_search_url?: string;
 }
 
 export interface EpisodeTag {

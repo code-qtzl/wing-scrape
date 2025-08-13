@@ -8,3 +8,4 @@ dist/
 .github
 # Folders to ignore
 images/archive/
+test-*
