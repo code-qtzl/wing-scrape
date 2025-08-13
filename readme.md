@@ -61,6 +61,11 @@ Once you run `npm run cli`, you'll be greeted with the Unofficial Hot Ones Inter
 ### Screenshot of Available Commands:
 
 <div align="center">
+  <img src="images/ep-search.png" alt="episode 443" width="600"/>
+  <p><em>Episode 433:</em> Conan O'Brien</p>
+</div>
+
+<div align="center">
   <img src="images/terminal-cli.png" alt="terminal hot ones cli" width="600"/>
   <p><em>Unofficial Hot Ones CLI in action</em></p>
 </div>
