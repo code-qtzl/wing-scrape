@@ -2,7 +2,7 @@
 
 <div align="left">
   <img src="images/run-chicken.png" alt="terminal hot ones cli" width="300"/>
-  <p><em>official (Unofficial) Hot Ones CLI</em></p>
+  <p><em>Official (Unofficial) Hot Ones CLI</em></p>
 </div>
 
 ## 🌶️ About WingScrape
@@ -11,44 +11,48 @@ WingScrape is a TypeScript-based web scraper and interactive CLI for analyzing t
 
 ## ✨ Features
 
-- **Episode Scraping**: Automatically fetch all Hot Ones episodes from TheTVDB
-- **Interactive CLI**: Browse episodes with a fun, emoji-rich command-line interface
-- **Episode Search**: Find episodes by guest name or title
-- **Statistics**: Get insights into episode data and show trends
-- **Random Discovery**: Discover random episodes to watch
-- **Season Browsing**: Explore episodes by season
-- **Smart Caching**: Episodes are cached locally for faster subsequent runs
+-   **Episode Scraping**: Automatically fetch all Hot Ones episodes from TheTVDB
+-   **Interactive CLI**: Browse episodes with a fun, emoji-rich command-line interface
+-   **Episode Search**: Find episodes by guest name or title
+-   **Statistics**: Get insights into episode data and show trends
+-   **Random Discovery**: Discover random episodes to watch
+-   **Season Browsing**: Explore episodes by season
+-   **Smart Caching**: Episodes are cached locally for faster subsequent runs
 
 ## 📋 Prerequisites
 
 Before you start your spicy journey, make sure you have:
 
-- **Node.js**: Version 18.0.0 or higher
-- **npm**: Version 8.0.0 or higher
-- **TypeScript**: Installed globally or via the project dependencies
+-   **Node.js**: Version 18.0.0 or higher
+-   **npm**: Version 8.0.0 or higher
+-   **TypeScript**: Installed globally or via the project dependencies
 
 ## 🚀 Quick Setup Guide
 
 1. **Clone the repository**
-   ```bash
-   git clone https://github.com/code-qtzl/wing-scrape.git
-   cd wing-scrape
-   ```
+
+    ```bash
+    git clone https://github.com/code-qtzl/wing-scrape.git
+    cd wing-scrape
+    ```
 
 2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+
+    ```bash
+    npm install
+    ```
 
 3. **Start the interactive CLI** (recommended for first-time users)
-   ```bash
-   npm run cli
-   ```
-   
-   Or (to have the latest episodes) scrape episodes to JSON file:
-   ```bash
-   npm run scrape
-   ```
+
+    ```bash
+    npm run cli
+    ```
+
+    Or (to have the latest episodes) scrape episodes to JSON file:
+
+    ```bash
+    npm run scrape
+    ```
 
 ## 🎮 Using the Interactive CLI
 
@@ -68,18 +72,19 @@ Once you run `npm run cli`, you'll be greeted with the Unofficial Hot Ones Inter
 
 <div align="center">
   <img src="images/terminal-latest-season.png" alt="latest season and episodes" width="600"/>
-  <p><em>Latest Season and Episodes</em></p>
+  <p><em>Latest Season and Episodes (as of August 04, 2025)</em></p>
 </div>
 
 ## 📁 Output
 
-- **JSON Export**: Episodes are saved to `hot-ones-report.json`
-- **Cached Data**: Subsequent runs use cached data for faster performance
-- **Data Quality**: Built-in validation checks for missing information
+-   **JSON Export**: Episodes are saved to `hot-ones-report.json`
+-   **Cached Data**: Subsequent runs use cached data for faster performance
+-   **Data Quality**: Built-in validation checks for missing information
 
 ## 🛠️ Development
 
 ### TypeScript Configuration
+
 The project uses TypeScript with strict configuration. Check `tsconfig.json` for compiler options.
 
 > [!NOTE]
@@ -88,4 +93,3 @@ The project uses TypeScript with strict configuration. Check `tsconfig.json` for
 ## 📄 License
 
 ISC License - feel free to use this project to explore the spicy world of Hot Ones!
-
