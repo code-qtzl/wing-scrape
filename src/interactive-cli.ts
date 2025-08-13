@@ -1,6 +1,5 @@
 import { HotOnesScraper } from './hot-ones-scraper';
 import { HotOnesEpisode } from './types';
-import { TerminalImageRenderer } from './terminal-image-renderer';
 import * as readline from 'readline';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -267,18 +266,6 @@ export class HotOnesInteractiveCLI {
 		console.log(brand.title(`🌶️  HOT ONES - EPISODE ${episodeNumber} 🌶️`));
 		console.log(brand.highlight(`🐔  ${episode.title.toUpperCase()}`));
 
-		// Show thumbnail if available and terminal supports it
-		if (
-			episode.youtube_thumbnail &&
-			TerminalImageRenderer.supportsImages()
-		) {
-			console.log(brand.highlight('📺 YouTube Thumbnail:'));
-			await TerminalImageRenderer.displayThumbnail(
-				episode.youtube_thumbnail,
-				300,
-			);
-		}
-
 		// Episode details table with enhanced styling
 		const detailsTable = new Table({
 			style: {
@@ -390,19 +377,6 @@ export class HotOnesInteractiveCLI {
 		if (episode.youtube_url) {
 			console.log(brand.title('🎥 YOUTUBE VIDEO (DIRECT LINK)'));
 			console.log(brand.info(`🔗 ${episode.youtube_url}`));
-
-			if (
-				!episode.youtube_thumbnail ||
-				!TerminalImageRenderer.supportsImages()
-			) {
-				console.log(
-					brand.dim(
-						`🖼️  Thumbnail: ${
-							episode.youtube_thumbnail || 'Not available'
-						}`,
-					),
-				);
-			}
 
 			console.log(
 				brand.highlight(

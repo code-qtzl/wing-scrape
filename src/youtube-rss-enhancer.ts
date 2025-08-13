@@ -24,7 +24,6 @@ export interface YouTubeVideoData {
 	video_id: string;
 	published_date: string;
 	description: string;
-	thumbnail_url: string;
 	view_count: number;
 	duration?: string;
 }
@@ -37,13 +36,6 @@ interface CustomRSSItem {
 	'yt:videoId'?: string;
 	'media:group'?: {
 		'media:description'?: string;
-		'media:thumbnail'?: Array<{
-			$: {
-				url: string;
-				width: string;
-				height: string;
-			};
-		}>;
 		'media:community'?: {
 			'media:statistics'?: {
 				$: {
@@ -127,12 +119,6 @@ export class YouTubeRSSEnhancer {
 				);
 			}
 
-			// Get thumbnail URL
-			let thumbnailUrl = '';
-			if (item['media:group']?.['media:thumbnail']?.[0]?.$?.url) {
-				thumbnailUrl = item['media:group']['media:thumbnail'][0].$.url;
-			}
-
 			// Get description
 			const description =
 				item['media:group']?.['media:description'] ||
@@ -147,7 +133,6 @@ export class YouTubeRSSEnhancer {
 					.toISOString()
 					.split('T')[0],
 				description,
-				thumbnail_url: thumbnailUrl,
 				view_count: viewCount,
 			};
 		} catch (error) {

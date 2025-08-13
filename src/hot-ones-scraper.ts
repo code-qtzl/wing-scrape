@@ -408,7 +408,6 @@ export class HotOnesScraper {
 						...episode,
 						youtube_url: youtubeVideo.youtube_url,
 						youtube_video_id: youtubeVideo.video_id,
-						youtube_thumbnail: youtubeVideo.thumbnail_url,
 						youtube_views: youtubeVideo.view_count,
 						youtube_published_date: youtubeVideo.published_date,
 					};

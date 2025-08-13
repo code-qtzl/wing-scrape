@@ -8,7 +8,6 @@ export interface HotOnesEpisode {
 	// YouTube data from RSS feed
 	youtube_url?: string;
 	youtube_video_id?: string;
-	youtube_thumbnail?: string;
 	youtube_views?: number;
 	youtube_published_date?: string;
 	// Fallback search URL when direct link not available
