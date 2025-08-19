@@ -10,7 +10,8 @@
 	"scripts": {
 		"scrape": "ts-node src/hot-ones-main.ts",
 		"cli": "ts-node src/interactive-cli.ts",
-		"test": "jest"
+		"test": "jest",
+		"demo": "ts-node demo-ascii.ts"
 	},
 	"repository": {
 		"type": "git",

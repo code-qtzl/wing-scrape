@@ -12,3 +12,5 @@ test-*
 # Files to ignore
 ascii-*
 demo-*
+# Jest configuration and cache
+jest.config.js
