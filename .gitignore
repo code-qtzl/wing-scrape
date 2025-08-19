@@ -9,3 +9,6 @@ dist/
 # Folders to ignore
 images/archive/
 test-*
+# Files to ignore
+ascii-*
+demo-*
