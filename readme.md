@@ -58,7 +58,7 @@ Before you start your spicy journey, make sure you have:
 
 Once you run `npm run cli`, you'll be greeted with the Unofficial Hot Ones Interactive CLI! Here's what you can do:
 
-### Screenshot of Available Commands:
+### The TUI in Action:
 
 <div align="center">
   <img src="images/ep-search.png" alt="episode 443" width="600"/>
