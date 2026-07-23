@@ -56,7 +56,7 @@ Before you start your spicy journey, make sure you have:
 
 ## 🎮 Using the Interactive CLI
 
-Once you run `npm run cli`, you'll be greeted with the Unofficial Hot Ones Interactive CLI! Here's what you can do:
+Once you run `npm run cli`, you'll be greeted with the Unofficial Hot Ones Interactive CLI!
 
 ### The TUI in Action:
 
